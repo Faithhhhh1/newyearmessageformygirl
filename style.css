@@ -1,121 +1,108 @@
 :root{
-  --pink:#ff6fae;
+  --pink:#ff5fa2;
 }
 
-/* RESET */
-*{box-sizing:border-box;}
 body{
   margin:0;
-  font-family:Arial,sans-serif;
-  background:#000;
+  font-family:Arial, sans-serif;
   color:#fff;
   overflow:hidden;
+  background:linear-gradient(180deg,#040814,#02040a);
 }
 
-/* 🌌 NIGHT SKY */
+/* 🌌 STARS */
 body::before{
   content:"";
   position:fixed;
   inset:0;
   background:
-    radial-gradient(circle at 30% 20%, #0c1b3a 0%, transparent 60%),
-    radial-gradient(circle at 70% 80%, #040b1d 0%, #000 60%);
-  z-index:-10;
+    radial-gradient(1px 1px at 20% 30%, #fff8, transparent),
+    radial-gradient(1px 1px at 70% 60%, #fff6, transparent),
+    radial-gradient(1px 1px at 40% 80%, #fff7, transparent),
+    radial-gradient(1px 1px at 80% 20%, #fff6, transparent);
+  animation:starDrift 80s linear infinite;
+  z-index:-2;
 }
 
-/* ⭐ STARS */
-.star{
-  position:fixed;
-  width:2px;
-  height:2px;
-  background:white;
-  opacity:.25;
-  border-radius:50%;
-  pointer-events:none;
-  animation: twinkle 6s infinite ease-in-out;
-}
-@keyframes twinkle{
-  0%,100%{opacity:.2}
-  50%{opacity:.6}
+@keyframes starDrift{
+  from{transform:translateY(0);}
+  to{transform:translateY(60px);}
 }
 
 /* 🌸 SAKURA PETALS */
-.sakura{
+.petal{
   position:fixed;
-  top:-40px;
-  width:14px;
-  height:10px;
-  background:radial-gradient(circle at 30% 30%, #ffd1e6, #ff9fc9);
-  border-radius:70% 30% 70% 30%;
-  opacity:.85;
+  width:12px;
+  height:8px;
+  background:radial-gradient(circle at 30% 30%, #ffdbe8, #ff9fbf);
+  border-radius:60% 40% 60% 40%;
+  opacity:.75;
   pointer-events:none;
-  animation: fall linear forwards;
+  animation:fall linear forwards;
+  z-index:1;
 }
+
 @keyframes fall{
   to{
-    transform:translate(var(--x),120vh) rotate(var(--r));
-    opacity:.15;
+    transform:
+      translate(var(--x),110vh)
+      rotate(var(--r));
+    opacity:0;
   }
 }
 
-/* 💍 ASKING OVERLAY */
+/* ASKING */
 #gate{
   position:fixed;
   inset:0;
   display:flex;
-  align-items:center;
   justify-content:center;
+  align-items:center;
   background:rgba(0,0,0,.55);
-  z-index:20;
+  z-index:10;
 }
 
 .gate-box{
   background:rgba(255,255,255,.12);
-  backdrop-filter:blur(14px);
-  padding:34px;
-  border-radius:20px;
+  backdrop-filter:blur(10px);
+  padding:30px;
+  border-radius:18px;
   text-align:center;
-  max-width:320px;
 }
 
 .gate-buttons button{
-  font-size:1.15em;
-  padding:12px 22px;
-  margin:8px;
+  padding:12px 20px;
+  margin:6px;
   border:none;
   border-radius:12px;
+  font-size:1.1em;
   cursor:pointer;
-  transition:transform .2s;
 }
 
 #yesBtn{
   background:var(--pink);
-  color:white;
-  box-shadow:
-    0 0 18px rgba(255,120,180,.6),
-    0 0 50px rgba(255,120,180,.45);
-  animation: yesGlow 2.6s infinite;
-}
-@keyframes yesGlow{
-  0%,100%{box-shadow:0 0 18px rgba(255,120,180,.6)}
-  50%{box-shadow:0 0 38px rgba(255,160,210,.9)}
+  color:#fff;
+  box-shadow:0 0 25px rgba(255,95,162,.7);
 }
 
 #noBtn{
-  background:#555;
-  color:white;
+  background:#444;
+  color:#fff;
 }
 
-.gate-buttons button:active{
-  transform:scale(.95);
-}
-
-/* MAIN CONTENT */
+/* MAIN */
 #main{
-  transition:filter 1.5s ease;
+  transition:filter 1s ease;
+  animation:cinematicZoom 45s ease-in-out infinite alternate;
 }
+
+@keyframes cinematicZoom{
+  from{transform:scale(1);}
+  to{transform:scale(1.035);}
+}
+
 .blurred{
-  filter:blur(16px);
+  filter:blur(14px);
   pointer-events:none;
 }
 
@@ -126,62 +113,24 @@ body::before{
   text-align:center;
 }
 
-/* GALLERY */
-.photo img{
-  width:100%;
-  border-radius:16px;
-  opacity:0;
-  transform:translateY(40px);
-  transition:1.2s ease;
-  box-shadow:
-    inset 0 0 30px rgba(0,0,0,.15),
-    0 0 26px rgba(255,140,190,.45);
-}
-.photo.show img{
-  opacity:1;
-  transform:none;
-}
-
-/* ENDING */
 .ending{
-  margin-top:120px;
-  opacity:0;
-  transition:opacity 2.5s ease;
+  margin:120px 0 80px;
 }
-.ending.show{opacity:1}
 
 #finalLove{
   font-size:22px;
-  margin-top:26px;
-  opacity:0;
-  transition:opacity 3s ease;
+  margin-bottom:10px;
 }
-#finalLove.show{opacity:1}
 
 #yesDate{
-  margin-top:14px;
   font-size:14px;
-  opacity:.75;
+  opacity:.8;
 }
 
-/* 🎬 CINEMATIC FADE */
-.fade-black{
-  position:fixed;
-  inset:0;
-  background:black;
-  opacity:0;
-  pointer-events:none;
-  animation: fadeOut 6s forwards;
-}
-@keyframes fadeOut{
-  to{opacity:1}
-}
-
-/* 🎵 HIDDEN PLAYER */
+/* HIDE PLAYER */
 #player{
-  position:fixed;
+  position:absolute;
   width:1px;
   height:1px;
-  opacity:0;
-  left:-9999px;
+  overflow:hidden;
 }
