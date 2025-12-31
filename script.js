@@ -8,7 +8,7 @@ const ending = document.getElementById("ending");
 const typedText = document.getElementById("typedText");
 const secret = document.getElementById("secret");
 
-/* BUILD IMAGE GALLERY */
+/* BUILD GALLERY */
 function build(){
   for(let i=1;i<=TOTAL;i++){
     const p = document.createElement("div");
@@ -22,7 +22,7 @@ function build(){
   }
 }
 
-/* AMBIENT FLOATING HEARTS */
+/* AMBIENT HEARTS */
 function startAmbient(){
   setInterval(()=>{
     if(!started) return;
@@ -38,10 +38,7 @@ function startAmbient(){
         { transform: "translateY(0)" },
         { transform: `translateY(${innerHeight + 120}px)` }
       ],
-      {
-        duration: 5000,
-        easing: "linear"
-      }
+      { duration: 5000, easing: "linear" }
     );
 
     setTimeout(()=>h.remove(),5200);
@@ -51,8 +48,8 @@ function startAmbient(){
 /* TYPE EFFECT */
 const lines = [
   "Another year.",
-  "with you.",
-  "Even from afar."
+  "Still us.",
+  "Always you."
 ];
 
 let li = 0, ci = 0;
@@ -68,12 +65,12 @@ function typeNext(){
     li++;
     ci = 0;
     setTimeout(typeNext,600);
-  } else {
+  }else{
     setTimeout(typeNext,70);
   }
 }
 
-/* 🔥 YOUTUBE — HIDDEN BUT PLAYING */
+/* YOUTUBE (HIDDEN) */
 let player;
 let tag = document.createElement("script");
 tag.src = "https://www.youtube.com/iframe_api";
@@ -82,20 +79,19 @@ document.body.appendChild(tag);
 function onYouTubeIframeAPIReady(){
   player = new YT.Player("player",{
     videoId: "96YyRY8vkhY",
-    playerVars: {
-      start: 16,
-      autoplay: 0,
-      controls: 0,
-      modestbranding: 1,
-      rel: 0,
-      showinfo: 0,
-      fs: 0,
-      iv_load_policy: 3
+    playerVars:{
+      start:16,
+      controls:0,
+      modestbranding:1,
+      rel:0,
+      showinfo:0,
+      fs:0,
+      iv_load_policy:3
     }
   });
 }
 
-/* START EVERYTHING ON TAP */
+/* START EVERYTHING */
 function start(){
   if(started) return;
   started = true;
@@ -114,36 +110,43 @@ new IntersectionObserver(e=>{
   }
 },{threshold:0.6}).observe(ending);
 
-/* SECRET MESSAGE (LONG PRESS + DOUBLE TAP / CLICK) */
+/* SECRET (LONG PRESS + DOUBLE TAP) */
 let pressTimer = null;
 let lastTap = 0;
 
-/* Long press (mobile & desktop touch) */
-document.body.addEventListener("touchstart", () => {
-  pressTimer = setTimeout(() => {
-    secret.style.display = "block";
-  }, 3000);
+document.body.addEventListener("touchstart",()=>{
+  pressTimer = setTimeout(()=>secret.style.display="block",3000);
 });
-
-document.body.addEventListener("touchend", () => {
+document.body.addEventListener("touchend",()=>{
   clearTimeout(pressTimer);
 });
 
-/* Double tap (mobile) */
-document.body.addEventListener("touchend", (e) => {
-  const currentTime = new Date().getTime();
-  const tapLength = currentTime - lastTap;
-
-  if (tapLength < 350 && tapLength > 0) {
-    secret.style.display = "block";
+document.body.addEventListener("touchend",(e)=>{
+  const now = Date.now();
+  if(now - lastTap < 350){
+    secret.style.display="block";
   }
-
-  lastTap = currentTime;
+  lastTap = now;
 });
 
-/* Double click (desktop) */
-document.body.addEventListener("dblclick", () => {
-  secret.style.display = "block";
+document.body.addEventListener("dblclick",()=>{
+  secret.style.display="block";
+});
+
+/* 🌈 SCROLL-BASED GLOW COLOR SHIFT */
+window.addEventListener("scroll",()=>{
+  const ratio = Math.min(
+    window.scrollY / (document.body.scrollHeight - innerHeight),
+    1
+  );
+
+  const r = Math.round(255 - ratio * 35);
+  const g = Math.round(140 - ratio * 30);
+  const b = Math.round(180 + ratio * 35);
+
+  document.documentElement.style.setProperty("--glow-r", r);
+  document.documentElement.style.setProperty("--glow-g", g);
+  document.documentElement.style.setProperty("--glow-b", b);
 });
 
 /* INIT */
