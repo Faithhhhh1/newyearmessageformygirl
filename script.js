@@ -49,7 +49,7 @@ function startAmbient(){
 }
 
 /* TYPE EFFECT */
-const lines = ["Two years.", "Still us.", "Always you."];
+const lines = ["Another Year.", "With you.", "Not together."];
 let li = 0, ci = 0;
 
 function typeNext(){
