@@ -34,7 +34,9 @@ body::after{
   text-align:center;
 }
 
-h1{ letter-spacing:2px; }
+h1{
+  letter-spacing:2px;
+}
 
 /* PHOTOS */
 .photo{
@@ -68,7 +70,9 @@ h1{ letter-spacing:2px; }
   opacity:0;
   transition:opacity 2s ease;
 }
-.ending.show{ opacity:1; }
+.ending.show{
+  opacity:1;
+}
 
 #typedText{
   white-space:pre-line;
@@ -80,4 +84,15 @@ h1{ letter-spacing:2px; }
   margin-top:28px;
   font-size:18px;
   color:#ffdbe8;
+}
+
+/* 🔥 HIDE YOUTUBE COMPLETELY */
+#player{
+  position:fixed;
+  width:1px;
+  height:1px;
+  opacity:0;
+  pointer-events:none;
+  left:-9999px;
+  top:-9999px;
 }
