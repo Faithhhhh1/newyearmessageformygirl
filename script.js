@@ -1,29 +1,20 @@
 /* ===============================
-   GLOBALS
+   ELEMENTS
 ================================ */
-let player;
-let stage = 0;
-let noIndex = 0;
-
-const messages = [
-  "Are you sure?",
-  "Really sure??",
-  "Pookie please…",
-  "Think again 😭",
-  "My heart is right here 💔",
-  "Okay fine… just kidding ❤️"
-];
-
 const gate = document.getElementById("gate");
 const gateText = document.getElementById("gateText");
 const yesBtn = document.getElementById("yesBtn");
 const noBtn = document.getElementById("noBtn");
-const main = document.getElementById("main");
 
+const main = document.getElementById("main");
 const gallery = document.getElementById("gallery");
 const ending = document.getElementById("ending");
 const finalLove = document.getElementById("finalLove");
 const dateEl = document.getElementById("yesDate");
+
+let stage = 0;
+let noIndex = 0;
+let player;
 
 /* ===============================
    UTIL
@@ -33,15 +24,17 @@ function vibrate(ms = 30) {
 }
 
 /* ===============================
-   MEMORY CHECK
+   FORCE INITIAL STATE
 ================================ */
 window.addEventListener("load", () => {
-  // Always start hidden
+  // Always show gate first
+  gate.style.display = "flex";
   main.classList.add("blurred");
   document.body.style.overflow = "hidden";
 
-  if (localStorage.getItem("sheSaidYes")) {
-    gate?.remove();
+  // Only auto-skip if user already accepted BEFORE
+  if (localStorage.getItem("sheSaidYes") === "true") {
+    gate.remove();
     main.classList.remove("blurred");
     document.body.style.overflow = "auto";
     startExperience(true);
@@ -51,6 +44,15 @@ window.addEventListener("load", () => {
 /* ===============================
    ASKING LOGIC
 ================================ */
+const messages = [
+  "Are you sure?",
+  "Really sure??",
+  "Pookie please…",
+  "Think again 😭",
+  "My heart is right here 💔",
+  "Okay fine… just kidding ❤️"
+];
+
 noBtn.onclick = () => {
   vibrate(25);
   gateText.textContent = messages[noIndex % messages.length];
@@ -83,7 +85,7 @@ yesBtn.onclick = () => {
     localStorage.setItem("sheSaidYes", "true");
     localStorage.setItem("yesDate", date);
 
-    gate.style.opacity = 0;
+    gate.style.opacity = "0";
     setTimeout(() => gate.remove(), 900);
 
     main.classList.remove("blurred");
@@ -100,7 +102,7 @@ function startExperience(fromMemory) {
   buildGallery();
   startAmbientHearts();
 
-  // Force images visible (mobile fix)
+  // Mobile visibility fix
   setTimeout(() => {
     document.querySelectorAll(".photo").forEach(p => {
       p.classList.add("show");
@@ -130,13 +132,13 @@ function buildGallery() {
   for (let i = 1; i <= 11; i++) {
     const p = document.createElement("div");
     p.className = "photo";
-    p.innerHTML = `<img src="image${i}.jpg" alt="">`;
+    p.innerHTML = `<img src="image${i}.jpg">`;
     gallery.appendChild(p);
   }
 }
 
 /* ===============================
-   AMBIENT HEARTS
+   FLOATING HEARTS
 ================================ */
 function startAmbientHearts() {
   setInterval(() => {
@@ -151,7 +153,7 @@ function startAmbientHearts() {
 }
 
 /* ===============================
-   FIREWORKS (JAPANESE STYLE)
+   JAPANESE-STYLE FIREWORKS
 ================================ */
 function fireworkBurst() {
   const colors = ["#ff5fa2", "#ffd166", "#a0c4ff", "#ffb4a2"];
@@ -169,7 +171,7 @@ function fireworkBurst() {
 }
 
 /* ===============================
-   YOUTUBE (SAFE AUTOPLAY)
+   YOUTUBE (MOBILE SAFE)
 ================================ */
 function loadYouTube() {
   if (window.YT && player) {
@@ -198,7 +200,7 @@ window.onYouTubeIframeAPIReady = () => {
 };
 
 /* ===============================
-   SECRET RESET (REPLAY)
+   SECRET RESET (REPLAY MODE)
 ================================ */
 let resetTimer = null;
 
