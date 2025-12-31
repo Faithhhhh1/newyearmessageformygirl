@@ -1,13 +1,4 @@
-let unlocked = false;
 let player;
-
-/* UNLOCK */
-function unlock() {
-  if (unlocked) return;
-  unlocked = true;
-  document.getElementById("mobileUnlock").remove();
-  document.body.classList.add("ready");
-}
 
 /* YOUTUBE */
 function onYouTubeIframeAPIReady() {
@@ -31,14 +22,14 @@ const noMessages = [
 ];
 let noIndex = 0;
 
-document.getElementById("noBtn").onclick = () => {
-  navigator.vibrate?.(30);
-  document.getElementById("noBtn").innerText =
-    noMessages[noIndex++ % noMessages.length];
+const noBtn = document.getElementById("noBtn");
+const yesBtn = document.getElementById("yesBtn");
+
+noBtn.onclick = () => {
+  noBtn.innerText = noMessages[noIndex++ % noMessages.length];
 };
 
-document.getElementById("yesBtn").onclick = () => {
-  navigator.vibrate?.(80);
+yesBtn.onclick = () => {
   localStorage.setItem("sheSaidYes", "true");
   localStorage.setItem("yesDate", new Date().toString());
 
@@ -58,7 +49,7 @@ function startMain() {
   typeText();
   showDate();
 
-  setTimeout(() => player?.playVideo(), 400);
+  if (player) player.playVideo();
 }
 
 /* GALLERY */
@@ -96,7 +87,7 @@ function showDate() {
     `She said yes on ${d.toDateString()} ❤️`;
 }
 
-/* JAPANESE FIREWORKS */
+/* FIREWORKS */
 function fireworks() {
   for (let k = 0; k < 6; k++) {
     setTimeout(() => {
@@ -104,8 +95,8 @@ function fireworks() {
       fw.className = "firework";
       document.body.appendChild(fw);
 
-      const colors = ["#ff5fa2", "#ffd166", "#ff9bd5", "#f72585"];
-      for (let i = 0; i < 28; i++) {
+      const colors = ["#ff5fa2", "#ffd166", "#ff9bd5"];
+      for (let i = 0; i < 30; i++) {
         const p = document.createElement("div");
         p.style.position = "absolute";
         p.style.width = "4px";
@@ -126,19 +117,10 @@ function fireworks() {
   }
 }
 
-/* LOAD */
+/* AUTO SKIP */
 window.onload = () => {
-  const ask = document.getElementById("askScreen");
-  const thank = document.getElementById("thankYou");
-  const main = document.getElementById("mainContent");
-
-  ask.classList.add("hidden");
-  thank.classList.add("hidden");
-  main.classList.add("hidden");
-
   if (localStorage.getItem("sheSaidYes")) {
+    document.getElementById("askScreen").classList.add("hidden");
     startMain();
-  } else {
-    ask.classList.remove("hidden");
   }
 };
