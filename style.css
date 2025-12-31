@@ -1,3 +1,9 @@
+:root{
+  --glow-r: 255;
+  --glow-g: 140;
+  --glow-b: 180;
+}
+
 body{
   margin:0;
   font-family:Arial,sans-serif;
@@ -13,7 +19,7 @@ body::before{
   position:fixed;
   inset:0;
   background:url("bg.jpg") center/cover no-repeat;
-  filter:blur(15px);
+  filter:blur(18px);
   transform:scale(1.1);
   z-index:-2;
 }
@@ -42,6 +48,7 @@ h1{
 .photo{
   margin-bottom:26px;
 }
+
 .photo img{
   width:100%;
   border-radius:14px;
@@ -50,21 +57,20 @@ h1{
   transition:
     opacity 1.2s ease,
     transform 1.2s ease,
-    box-shadow 1.2s ease;
-  
-  /* soft glow */
+    box-shadow 0.6s ease;
+
   box-shadow:
-    0 0 12px rgba(255, 140, 180, 0.35),
-    0 0 28px rgba(255, 140, 180, 0.25);
+    0 0 14px rgba(var(--glow-r), var(--glow-g), var(--glow-b), 0.35),
+    0 0 34px rgba(var(--glow-r), var(--glow-g), var(--glow-b), 0.25);
 }
+
 .photo.show img{
   opacity:1;
   transform:translateY(0);
 
-  /* stronger glow on reveal */
   box-shadow:
-    0 0 18px rgba(255, 140, 180, 0.55),
-    0 0 45px rgba(255, 140, 180, 0.35);
+    0 0 20px rgba(var(--glow-r), var(--glow-g), var(--glow-b), 0.6),
+    0 0 48px rgba(var(--glow-r), var(--glow-g), var(--glow-b), 0.4);
 }
 
 /* AMBIENT HEARTS */
@@ -99,7 +105,7 @@ h1{
   color:#ffdbe8;
 }
 
-/* 🔥 HIDE YOUTUBE COMPLETELY */
+/* HIDE YOUTUBE */
 #player{
   position:fixed;
   width:1px;
