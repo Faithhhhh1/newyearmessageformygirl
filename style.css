@@ -19,28 +19,30 @@ body::before{
   position:fixed;
   inset:0;
   background:
-    radial-gradient(circle at 50% 10%, #1e2d4a 0%, #0b1426 40%, #03060d 80%);
+    radial-gradient(circle at 50% 15%, #1b2a4a 0%, #0c1629 45%, #04070f 80%);
   z-index:-5;
 }
 
-/* ================= MOON ================= */
+/* ================= REALISTIC CRESCENT MOON ================= */
 body::after{
   content:"";
   position:fixed;
-  top:60px;
-  right:80px;
+  top:70px;
+  right:90px;
   width:180px;
   height:180px;
   border-radius:50%;
   background:
-    radial-gradient(circle,
-      #fff 0%,
-      #fdf6d8 35%,
-      rgba(255,255,255,.35) 55%,
-      rgba(255,255,255,.15) 65%,
-      transparent 75%);
-  filter: blur(1px);
-  opacity:.9;
+    radial-gradient(circle at 35% 50%,
+      rgba(255,255,255,.9) 0%,
+      rgba(255,255,255,.65) 35%,
+      rgba(255,255,255,.25) 55%,
+      transparent 60%);
+  box-shadow:
+    inset -55px 0 0 0 rgba(0,0,0,.95), /* shadowed side */
+    0 0 18px rgba(255,255,240,.15);  /* subtle moon glow */
+  filter: blur(.6px);
+  opacity:.95;
   z-index:-4;
 }
 
@@ -92,15 +94,21 @@ body::after{
 }
 
 @keyframes pulseYes{
-  0%,100%{ box-shadow:0 0 14px rgba(255,120,180,.5),0 0 40px rgba(255,120,180,.3);}
-  50%{ box-shadow:0 0 26px rgba(255,160,220,.9),0 0 70px rgba(255,160,220,.6);}
+  0%,100%{
+    box-shadow:0 0 14px rgba(255,120,180,.5),
+               0 0 40px rgba(255,120,180,.3);
+  }
+  50%{
+    box-shadow:0 0 26px rgba(255,160,220,.9),
+               0 0 70px rgba(255,160,220,.6);
+  }
 }
 
-/* 💍 RING SPARKLE AROUND YES */
+/* 💍 RING SPARKLE */
 #yesBtn::after{
   content:"💍";
   position:absolute;
-  inset:-8px;
+  inset:-10px;
   border-radius:50%;
   display:flex;
   align-items:center;
@@ -117,8 +125,8 @@ body::after{
 }
 
 @keyframes ringOrbit{
-  from{ transform:rotate(0deg) translateX(26px) rotate(0deg); }
-  to{ transform:rotate(360deg) translateX(26px) rotate(-360deg); }
+  from{ transform:rotate(0deg) translateX(28px) rotate(0deg); }
+  to{ transform:rotate(360deg) translateX(28px) rotate(-360deg); }
 }
 
 /* ================= MAIN / CAMERA ================= */
@@ -126,10 +134,7 @@ body::after{
   transition:transform 14s ease, filter 1.2s ease;
   transform:scale(1);
 }
-
-#main.zoom{
-  transform:scale(1.05);
-}
+#main.zoom{ transform:scale(1.05); }
 
 .blurred{
   filter:blur(16px);
@@ -206,7 +211,7 @@ body::after{
   color:#ffdbe8;
 }
 
-/* ================= FADE TO BLACK ================= */
+/* ================= CINEMATIC FADE ================= */
 #fadeBlack{
   position:fixed;
   inset:0;
