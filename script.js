@@ -26,7 +26,6 @@ yesBtn.onclick = () => {
   navigator.vibrate?.(80);
 
   if(stage === 0){
-    // FIRST YES
     noBtn.remove();
     yesBtn.remove();
     gateText.textContent = "Thank you for choosing me ❤️";
@@ -57,9 +56,23 @@ function finishGate(){
 /* ---------------- MAIN EXPERIENCE ---------------- */
 
 function startExperience(){
+  buildGallery();      // ✅ RESTORED
   startPetals();
   showDate();
   loadMusic();
+}
+
+/* 🖼️ GALLERY (THIS WAS MISSING) */
+function buildGallery(){
+  const gallery = document.getElementById("gallery");
+  if(!gallery) return;
+
+  for(let i = 1; i <= 11; i++){
+    const div = document.createElement("div");
+    div.className = "photo";
+    div.innerHTML = `<img src="image${i}.jpg" alt="Memory ${i}">`;
+    gallery.appendChild(div);
+  }
 }
 
 /* 🌸 PETALS */
