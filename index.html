@@ -2,41 +2,41 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>For You ❤️</title>
+  <title>For You</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<!-- ASK SCREEN -->
-<div id="askScreen" class="center">
-  <h1>Will you be my wife? 💍</h1>
-  <div class="buttons">
-    <button id="yesBtn">Yes ❤️</button>
-    <button id="noBtn">No 😶</button>
+<!-- ASKING OVERLAY -->
+<div id="gate">
+  <div class="gate-box">
+    <h2 id="gateText">Will you be my wife? 💍</h2>
+    <div class="gate-buttons">
+      <button id="yesBtn">Yes ❤️</button>
+      <button id="noBtn">No 😒</button>
+    </div>
   </div>
-</div>
-
-<!-- THANK YOU -->
-<div id="thankYou" class="center hidden">
-  <h1>Thank you for choosing me ❤️</h1>
 </div>
 
 <!-- MAIN CONTENT -->
-<div id="mainContent" class="hidden">
-  <h1 class="title">For You ❤️</h1>
-  <div id="gallery"></div>
+<div id="main" class="blurred">
+  <div class="container">
+    <h1>For You ❤️</h1>
 
-  <div class="ending">
-    <div id="typedText"></div>
-    <div id="dateText"></div>
+    <div id="gallery"></div>
+
+    <div class="ending" id="ending">
+      <div id="typedText"></div>
+      <div id="finalLove">I love you. Always. ❤️</div>
+      <div id="yesDate"></div>
+    </div>
   </div>
 </div>
 
-<!-- YouTube -->
+<!-- Hidden YouTube Player -->
 <div id="player"></div>
 
-<script src="https://www.youtube.com/iframe_api"></script>
 <script src="script.js"></script>
 </body>
 </html>
