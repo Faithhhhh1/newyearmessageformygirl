@@ -6,16 +6,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="style.css">
 </head>
-
 <body>
 
-<!-- HARD LOCK -->
-<div id="mobileUnlock" onclick="unlock()">
-  <div class="unlockBox">Tap to begin ❤️</div>
-</div>
-
-<!-- ASK -->
-<div id="askScreen" class="center hidden">
+<!-- ASK SCREEN -->
+<div id="askScreen" class="center">
   <h1>Will you be my wife? 💍</h1>
   <div class="buttons">
     <button id="yesBtn">Yes ❤️</button>
@@ -28,7 +22,7 @@
   <h1>Thank you for choosing me ❤️</h1>
 </div>
 
-<!-- MAIN LETTER -->
+<!-- MAIN CONTENT -->
 <div id="mainContent" class="hidden">
   <h1 class="title">For You ❤️</h1>
   <div id="gallery"></div>
@@ -39,7 +33,7 @@
   </div>
 </div>
 
-<!-- Hidden YouTube -->
+<!-- YouTube -->
 <div id="player"></div>
 
 <script src="https://www.youtube.com/iframe_api"></script>
