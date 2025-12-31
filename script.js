@@ -1,126 +1,157 @@
-let player;
+/* ---------- MEMORY ---------- */
+if(localStorage.getItem("sheSaidYes")){
+  document.getElementById("gate")?.remove();
+  document.getElementById("main").classList.remove("blurred");
+  document.body.style.overflow = "auto";
+  startExperience();
+}
 
-/* YOUTUBE */
-function onYouTubeIframeAPIReady() {
-  player = new YT.Player("player", {
-    videoId: "96YyRY8vkhY",
-    playerVars: {
-      start: 16,
-      controls: 0,
-      playsinline: 1
+/* ---------- ASKING ---------- */
+const messages=[
+  "Are you sure?",
+  "Really sure??",
+  "Pookie please…",
+  "Think again 😭",
+  "My heart is right here 💔",
+  "Okay fine… just kidding ❤️"
+];
+
+let noIndex=0;
+let stage=0;
+
+const gate=document.getElementById("gate");
+const gateText=document.getElementById("gateText");
+const yesBtn=document.getElementById("yesBtn");
+const noBtn=document.getElementById("noBtn");
+const main=document.getElementById("main");
+
+function vibrate(){ if(navigator.vibrate) navigator.vibrate(20); }
+
+noBtn.onclick=()=>{
+  vibrate();
+  gateText.textContent=messages[noIndex%messages.length];
+  noIndex++;
+  yesBtn.style.fontSize=`${1.2+noIndex*0.15}em`;
+};
+
+yesBtn.onclick=()=>{
+  vibrate();
+  fireworkBurst();
+
+  if(stage===0){
+    noBtn.style.display="none";
+    yesBtn.style.display="none";
+    gateText.textContent="Thank you for choosing me ❤️";
+    stage=1;
+
+    setTimeout(()=>{
+      gateText.textContent="Are you ready for a small surprise? ✨";
+      yesBtn.style.display="inline-block";
+    },1800);
+  }else{
+    const date=new Date().toLocaleDateString(undefined,{
+      year:"numeric",month:"long",day:"numeric"
+    });
+    localStorage.setItem("sheSaidYes","true");
+    localStorage.setItem("yesDate",date);
+
+    gate.style.opacity=0;
+    setTimeout(()=>gate.remove(),1000);
+    main.classList.remove("blurred");
+    document.body.style.overflow="auto";
+    startExperience();
+  }
+};
+
+/* ---------- FIREWORKS ---------- */
+function fireworkBurst(){
+  const colors=["#ff5fa2","#ffd166","#a0c4ff","#ffb4a2"];
+  for(let i=0;i<30;i++){
+    const f=document.createElement("div");
+    f.className="firework";
+    f.style.background=colors[Math.floor(Math.random()*colors.length)];
+    f.style.left="50%";
+    f.style.top="50%";
+    f.style.setProperty("--x",`${Math.random()*400-200}px`);
+    f.style.setProperty("--y",`${Math.random()*-350}px`);
+    document.body.appendChild(f);
+    setTimeout(()=>f.remove(),1600);
+  }
+}
+
+/* ---------- MAIN EXPERIENCE ---------- */
+const gallery=document.getElementById("gallery");
+const ending=document.getElementById("ending");
+const finalLove=document.getElementById("finalLove");
+const dateEl=document.getElementById("yesDate");
+
+function buildGallery(){
+  for(let i=1;i<=11;i++){
+    const p=document.createElement("div");
+    p.className="photo";
+    p.innerHTML=`<img src="image${i}.jpg">`;
+    gallery.appendChild(p);
+
+    new IntersectionObserver(e=>{
+      if(e[0].isIntersecting) p.classList.add("show");
+    },{threshold:.4}).observe(p);
+  }
+}
+
+function startAmbientHearts(){
+  setInterval(()=>{
+    const h=document.createElement("div");
+    h.className="ambient-heart";
+    h.textContent="❤️";
+    h.style.left=Math.random()*100+"vw";
+    h.style.animationDuration=4+Math.random()*3+"s";
+    document.body.appendChild(h);
+    setTimeout(()=>h.remove(),7000);
+  },900);
+}
+
+function startExperience(){
+  buildGallery();
+  startAmbientHearts();
+
+  const savedDate=localStorage.getItem("yesDate");
+  if(savedDate) dateEl.textContent=`She said yes on ${savedDate} ❤️`;
+
+  const tag=document.createElement("script");
+  tag.src="https://www.youtube.com/iframe_api";
+  document.body.appendChild(tag);
+
+  new IntersectionObserver(e=>{
+    if(e[0].isIntersecting){
+      ending.classList.add("show");
+      setTimeout(()=>finalLove.classList.add("show"),2000);
     }
+  },{threshold:.6}).observe(ending);
+}
+
+/* MUSIC */
+let player;
+function onYouTubeIframeAPIReady(){
+  player=new YT.Player("player",{
+    videoId:"96YyRY8vkhY",
+    playerVars:{start:16,autoplay:1},
+    events:{onReady:e=>e.target.playVideo()}
   });
 }
 
-/* ASKING */
-const noMessages = [
-  "Are you sure?",
-  "Please 🥺",
-  "Think again 💔",
-  "I’ll cry 😭",
-  "Say yes please ❤️"
-];
-let noIndex = 0;
+/* 🔁 SECRET REPLAY */
+let timer=null;
+document.body.addEventListener("touchstart",()=>timer=setTimeout(reset,5000));
+document.body.addEventListener("touchend",()=>clearTimeout(timer));
 
-const noBtn = document.getElementById("noBtn");
-const yesBtn = document.getElementById("yesBtn");
+let keys={};
+document.addEventListener("keydown",e=>{
+  keys[e.key.toLowerCase()]=true;
+  if(keys.r&&keys.e&&keys.l) reset();
+});
+document.addEventListener("keyup",e=>keys[e.key.toLowerCase()]=false);
 
-noBtn.onclick = () => {
-  noBtn.innerText = noMessages[noIndex++ % noMessages.length];
-};
-
-yesBtn.onclick = () => {
-  localStorage.setItem("sheSaidYes", "true");
-  localStorage.setItem("yesDate", new Date().toString());
-
-  document.getElementById("askScreen").classList.add("hidden");
-  document.getElementById("thankYou").classList.remove("hidden");
-
-  fireworks();
-  setTimeout(startMain, 2000);
-};
-
-/* MAIN */
-function startMain() {
-  document.getElementById("thankYou").classList.add("hidden");
-  document.getElementById("mainContent").classList.remove("hidden");
-
-  buildGallery();
-  typeText();
-  showDate();
-
-  if (player) player.playVideo();
+function reset(){
+  localStorage.clear();
+  location.reload();
 }
-
-/* GALLERY */
-function buildGallery() {
-  const g = document.getElementById("gallery");
-  g.innerHTML = "";
-  for (let i = 1; i <= 11; i++) {
-    const d = document.createElement("div");
-    d.className = "photo";
-    d.innerHTML = `<img src="image${i}.jpg">`;
-    g.appendChild(d);
-  }
-}
-
-/* TYPE */
-const lines = ["Another year.", "Still us.", "Always you ❤️"];
-let li = 0, ci = 0;
-
-function typeText() {
-  if (li >= lines.length) return;
-  document.getElementById("typedText").innerHTML += lines[li][ci++] || "";
-  if (ci > lines[li].length) {
-    document.getElementById("typedText").innerHTML += "\n";
-    li++; ci = 0;
-    setTimeout(typeText, 500);
-  } else {
-    setTimeout(typeText, 70);
-  }
-}
-
-/* DATE */
-function showDate() {
-  const d = new Date(localStorage.getItem("yesDate"));
-  document.getElementById("dateText").innerText =
-    `She said yes on ${d.toDateString()} ❤️`;
-}
-
-/* FIREWORKS */
-function fireworks() {
-  for (let k = 0; k < 6; k++) {
-    setTimeout(() => {
-      const fw = document.createElement("div");
-      fw.className = "firework";
-      document.body.appendChild(fw);
-
-      const colors = ["#ff5fa2", "#ffd166", "#ff9bd5"];
-      for (let i = 0; i < 30; i++) {
-        const p = document.createElement("div");
-        p.style.position = "absolute";
-        p.style.width = "4px";
-        p.style.height = "4px";
-        p.style.borderRadius = "50%";
-        p.style.background = colors[Math.floor(Math.random()*colors.length)];
-        fw.appendChild(p);
-
-        const a = Math.random() * Math.PI * 2;
-        const d = 70 + Math.random() * 60;
-        p.animate([
-          { transform: "translate(0,0)", opacity: 1 },
-          { transform: `translate(${Math.cos(a)*d}px,${Math.sin(a)*d}px)`, opacity: 0 }
-        ], { duration: 1800, easing: "ease-out" });
-      }
-      setTimeout(() => fw.remove(), 2000);
-    }, k * 300);
-  }
-}
-
-/* AUTO SKIP */
-window.onload = () => {
-  if (localStorage.getItem("sheSaidYes")) {
-    document.getElementById("askScreen").classList.add("hidden");
-    startMain();
-  }
-};
