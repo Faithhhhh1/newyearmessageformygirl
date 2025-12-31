@@ -1,39 +1,22 @@
-/* ================== SAFE BOOT ================== */
-document.addEventListener("DOMContentLoaded", () => {
-  const gate = document.getElementById("gate");
-  const main = document.getElementById("main");
+/* ---------- ASKING LOGIC ---------- */
 
-  // Default state
-  document.body.style.overflow = "hidden";
-  main.classList.add("blurred");
-
-  if (localStorage.getItem("sheSaidYes") === "true") {
-    gate.remove();
-    main.classList.remove("blurred");
-    document.body.style.overflow = "auto";
-    startExperience();
-  } else {
-    gate.style.display = "flex";
-  }
-});
-
-/* ================== ASKING ================== */
-const gateText = document.getElementById("gateText");
-const yesBtn = document.getElementById("yesBtn");
-const noBtn = document.getElementById("noBtn");
-const gate = document.getElementById("gate");
-const main = document.getElementById("main");
-
-const noMessages = [
+const messages = [
   "Are you sure?",
-  "Please 🥺",
+  "Really sure??",
+  "Pookie please 🥺",
   "Think again 💔",
   "I’ll cry 😭",
-  "Say yes please ❤️"
+  "Okay fine… just kidding ❤️"
 ];
 
 let noIndex = 0;
 let stage = 0;
+
+const gate = document.getElementById("gate");
+const gateText = document.getElementById("gateText");
+const yesBtn = document.getElementById("yesBtn");
+const noBtn = document.getElementById("noBtn");
+const main = document.getElementById("main");
 
 function vibrate(ms = 30) {
   if (navigator.vibrate) navigator.vibrate(ms);
@@ -41,7 +24,7 @@ function vibrate(ms = 30) {
 
 noBtn.onclick = () => {
   vibrate();
-  gateText.textContent = noMessages[noIndex % noMessages.length];
+  gateText.textContent = messages[noIndex % messages.length];
   noIndex++;
   yesBtn.style.fontSize = `${1.2 + noIndex * 0.15}em`;
 };
@@ -60,17 +43,19 @@ yesBtn.onclick = () => {
       gateText.textContent = "Are you ready for a small surprise? ✨";
       yesBtn.style.display = "inline-block";
     }, 1800);
+
   } else {
-    const date = new Date().toLocaleDateString(undefined, {
-      year: "numeric",
-      month: "long",
-      day: "numeric"
-    });
+    // SAVE DATE ONLY ON FIRST EVER YES
+    if (!localStorage.getItem("yesDate")) {
+      const date = new Date().toLocaleDateString(undefined, {
+        year: "numeric",
+        month: "long",
+        day: "numeric"
+      });
+      localStorage.setItem("yesDate", date);
+    }
 
-    localStorage.setItem("sheSaidYes", "true");
-    localStorage.setItem("yesDate", date);
-
-    gate.style.opacity = "0";
+    gate.style.opacity = 0;
     setTimeout(() => gate.remove(), 1000);
 
     main.classList.remove("blurred");
@@ -79,10 +64,10 @@ yesBtn.onclick = () => {
   }
 };
 
-/* ================== FIREWORKS ================== */
+/* ---------- FIREWORKS (JAPANESE STYLE) ---------- */
 function fireworkBurst() {
   const colors = ["#ff5fa2", "#ffd166", "#a0c4ff", "#ffb4a2"];
-  for (let i = 0; i < 30; i++) {
+  for (let i = 0; i < 36; i++) {
     const f = document.createElement("div");
     f.className = "firework";
     f.style.background = colors[Math.floor(Math.random() * colors.length)];
@@ -95,7 +80,8 @@ function fireworkBurst() {
   }
 }
 
-/* ================== MAIN EXPERIENCE ================== */
+/* ---------- MAIN EXPERIENCE ---------- */
+
 const gallery = document.getElementById("gallery");
 const ending = document.getElementById("ending");
 const finalLove = document.getElementById("finalLove");
@@ -114,7 +100,7 @@ function buildGallery() {
   }
 }
 
-function startAmbientHearts() {
+function startHearts() {
   setInterval(() => {
     const h = document.createElement("div");
     h.className = "ambient-heart";
@@ -126,18 +112,32 @@ function startAmbientHearts() {
   }, 900);
 }
 
+function typeText() {
+  const lines = ["Another year.", "Still us.", "Always you ❤️"];
+  let li = 0, ci = 0;
+  const t = document.getElementById("typedText");
+
+  function next() {
+    if (li >= lines.length) return;
+    t.innerHTML += lines[li][ci++] || "";
+    if (ci > lines[li].length) {
+      t.innerHTML += "<br>";
+      li++; ci = 0;
+      setTimeout(next, 500);
+    } else setTimeout(next, 70);
+  }
+  next();
+}
+
 function startExperience() {
   buildGallery();
-  startAmbientHearts();
+  startHearts();
+  typeText();
 
   const savedDate = localStorage.getItem("yesDate");
   if (savedDate) {
     dateEl.textContent = `She said yes on ${savedDate} ❤️`;
   }
-
-  const tag = document.createElement("script");
-  tag.src = "https://www.youtube.com/iframe_api";
-  document.body.appendChild(tag);
 
   new IntersectionObserver(e => {
     if (e[0].isIntersecting) {
@@ -145,33 +145,28 @@ function startExperience() {
       setTimeout(() => finalLove.classList.add("show"), 2000);
     }
   }, { threshold: 0.6 }).observe(ending);
+
+  loadMusic();
 }
 
-/* ================== MUSIC ================== */
+/* ---------- MUSIC ---------- */
 let player;
+function loadMusic() {
+  const tag = document.createElement("script");
+  tag.src = "https://www.youtube.com/iframe_api";
+  document.body.appendChild(tag);
+}
+
 function onYouTubeIframeAPIReady() {
   player = new YT.Player("player", {
     videoId: "96YyRY8vkhY",
-    playerVars: { start: 16, autoplay: 1, playsinline: 1 },
+    playerVars: { start: 16, autoplay: 1 },
     events: { onReady: e => e.target.playVideo() }
   });
 }
 
-/* ================== SECRET RESET ================== */
-let holdTimer = null;
-document.body.addEventListener("touchstart", () => {
-  holdTimer = setTimeout(reset, 5000);
-});
-document.body.addEventListener("touchend", () => clearTimeout(holdTimer));
-
-let keys = {};
-document.addEventListener("keydown", e => {
-  keys[e.key.toLowerCase()] = true;
-  if (keys.r && keys.e && keys.l) reset();
-});
-document.addEventListener("keyup", e => keys[e.key.toLowerCase()] = false);
-
-function reset() {
-  localStorage.clear();
-  location.reload();
-}
+/* ---------- INITIAL STATE ---------- */
+window.onload = () => {
+  document.body.style.overflow = "hidden";
+  main.classList.add("blurred");
+};
