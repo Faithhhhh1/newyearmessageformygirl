@@ -2,41 +2,47 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>For You</title>
+  <title>For You ❤️</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
 
-<!-- ASKING OVERLAY -->
-<div id="gate">
-  <div class="gate-box">
-    <h2 id="gateText">Will you be my wife? 💍</h2>
-    <div class="gate-buttons">
-      <button id="yesBtn">Yes ❤️</button>
-      <button id="noBtn">No 😒</button>
-    </div>
+<!-- MOBILE UNLOCK -->
+<div id="mobileUnlock">
+  <div class="unlockBox">Tap to begin ❤️</div>
+</div>
+
+<!-- ASKING SCREEN -->
+<div id="askScreen" class="centerBox">
+  <h1>Will you be my wife? 💍</h1>
+  <div class="buttons">
+    <button id="yesBtn">Yes ❤️</button>
+    <button id="noBtn">No 😶</button>
   </div>
 </div>
 
-<!-- MAIN CONTENT -->
-<div id="main" class="blurred">
-  <div class="container">
-    <h1>For You ❤️</h1>
+<!-- THANK YOU SCREEN -->
+<div id="thankYou" class="centerBox hidden">
+  <h1>Thank you for choosing me ❤️</h1>
+</div>
 
-    <div id="gallery"></div>
+<!-- MAIN LETTER -->
+<div id="mainContent" class="hidden">
+  <h1 class="title">For You ❤️</h1>
+  <div id="gallery"></div>
 
-    <div class="ending" id="ending">
-      <div id="typedText"></div>
-      <div id="finalLove">I love you. Always. ❤️</div>
-      <div id="yesDate"></div>
-    </div>
+  <div class="ending">
+    <div id="typedText"></div>
+    <div id="dateText"></div>
   </div>
 </div>
 
-<!-- Hidden YouTube Player -->
+<!-- Hidden YouTube -->
 <div id="player"></div>
 
+<script src="https://www.youtube.com/iframe_api"></script>
 <script src="script.js"></script>
 </body>
 </html>
