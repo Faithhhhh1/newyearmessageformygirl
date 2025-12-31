@@ -64,19 +64,43 @@ yesBtn.onclick = () => {
   }
 };
 
-/* ---------- FIREWORKS (JAPANESE STYLE) ---------- */
-function fireworkBurst() {
-  const colors = ["#ff5fa2", "#ffd166", "#a0c4ff", "#ffb4a2"];
-  for (let i = 0; i < 36; i++) {
-    const f = document.createElement("div");
-    f.className = "firework";
-    f.style.background = colors[Math.floor(Math.random() * colors.length)];
-    f.style.left = "50%";
-    f.style.top = "50%";
-    f.style.setProperty("--x", `${Math.random() * 400 - 200}px`);
-    f.style.setProperty("--y", `${Math.random() * -350}px`);
-    document.body.appendChild(f);
-    setTimeout(() => f.remove(), 1600);
+function fireworkBurst(x = window.innerWidth / 2, y = window.innerHeight / 2) {
+  const colors = [
+    "#ff6fae", "#ffd166", "#a0c4ff",
+    "#ffb703", "#ff9bd5", "#cdb4db"
+  ];
+
+  const count = 48; // more particles = realistic
+
+  for (let i = 0; i < count; i++) {
+    const p = document.createElement("div");
+    p.className = "firework";
+    document.body.appendChild(p);
+
+    const angle = (Math.PI * 2 * i) / count;
+    const radius = 120 + Math.random() * 80;
+
+    const dx = Math.cos(angle) * radius;
+    const dy = Math.sin(angle) * radius;
+
+    p.style.left = x + "px";
+    p.style.top = y + "px";
+    p.style.background =
+      colors[Math.floor(Math.random() * colors.length)];
+
+    p.animate(
+      [
+        { transform: "translate(0,0) scale(1)", opacity: 1 },
+        { transform: `translate(${dx}px,${dy}px) scale(1.2)`, opacity: 0.9 },
+        { transform: `translate(${dx}px,${dy + 40}px) scale(0.8)`, opacity: 0 }
+      ],
+      {
+        duration: 2200,
+        easing: "cubic-bezier(.22,.61,.36,1)"
+      }
+    );
+
+    setTimeout(() => p.remove(), 2300);
   }
 }
 
