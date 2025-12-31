@@ -49,7 +49,12 @@ function startAmbient(){
 }
 
 /* TYPE EFFECT */
-const lines = ["Another Year.", "With you.", "Not together."];
+const lines = [
+  "Another year.",
+  "with you.",
+  "Even from afar."
+];
+
 let li = 0, ci = 0;
 
 function typeNext(){
@@ -63,7 +68,7 @@ function typeNext(){
     li++;
     ci = 0;
     setTimeout(typeNext,600);
-  }else{
+  } else {
     setTimeout(typeNext,70);
   }
 }
@@ -109,15 +114,36 @@ new IntersectionObserver(e=>{
   }
 },{threshold:0.6}).observe(ending);
 
-/* SECRET MESSAGE */
+/* SECRET MESSAGE (LONG PRESS + DOUBLE TAP / CLICK) */
 let pressTimer = null;
-document.body.addEventListener("touchstart",()=>{
-  pressTimer = setTimeout(()=>{
+let lastTap = 0;
+
+/* Long press (mobile & desktop touch) */
+document.body.addEventListener("touchstart", () => {
+  pressTimer = setTimeout(() => {
     secret.style.display = "block";
-  },3000);
+  }, 3000);
 });
-document.body.addEventListener("touchend",()=>{
+
+document.body.addEventListener("touchend", () => {
   clearTimeout(pressTimer);
+});
+
+/* Double tap (mobile) */
+document.body.addEventListener("touchend", (e) => {
+  const currentTime = new Date().getTime();
+  const tapLength = currentTime - lastTap;
+
+  if (tapLength < 350 && tapLength > 0) {
+    secret.style.display = "block";
+  }
+
+  lastTap = currentTime;
+});
+
+/* Double click (desktop) */
+document.body.addEventListener("dblclick", () => {
+  secret.style.display = "block";
 });
 
 /* INIT */
