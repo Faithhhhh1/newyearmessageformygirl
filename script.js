@@ -1,177 +1,224 @@
-:root{
-  --glow-r:255;
-  --glow-g:140;
-  --glow-b:180;
+/* ===============================
+   GLOBALS
+================================ */
+let player;
+let stage = 0;
+let noIndex = 0;
+
+const messages = [
+  "Are you sure?",
+  "Really sure??",
+  "Pookie please…",
+  "Think again 😭",
+  "My heart is right here 💔",
+  "Okay fine… just kidding ❤️"
+];
+
+const gate = document.getElementById("gate");
+const gateText = document.getElementById("gateText");
+const yesBtn = document.getElementById("yesBtn");
+const noBtn = document.getElementById("noBtn");
+const main = document.getElementById("main");
+
+const gallery = document.getElementById("gallery");
+const ending = document.getElementById("ending");
+const finalLove = document.getElementById("finalLove");
+const dateEl = document.getElementById("yesDate");
+
+/* ===============================
+   UTIL
+================================ */
+function vibrate(ms = 30) {
+  if (navigator.vibrate) navigator.vibrate(ms);
 }
 
-body{
-  margin:0;
-  font-family:Arial,sans-serif;
-  background:#000;
-  overflow:hidden;
-  color:#fff;
+/* ===============================
+   MEMORY CHECK
+================================ */
+window.addEventListener("load", () => {
+  // Always start hidden
+  main.classList.add("blurred");
+  document.body.style.overflow = "hidden";
+
+  if (localStorage.getItem("sheSaidYes")) {
+    gate?.remove();
+    main.classList.remove("blurred");
+    document.body.style.overflow = "auto";
+    startExperience(true);
+  }
+});
+
+/* ===============================
+   ASKING LOGIC
+================================ */
+noBtn.onclick = () => {
+  vibrate(25);
+  gateText.textContent = messages[noIndex % messages.length];
+  noIndex++;
+  yesBtn.style.fontSize = `${1.2 + noIndex * 0.15}em`;
+};
+
+yesBtn.onclick = () => {
+  vibrate(80);
+  fireworkBurst();
+
+  if (stage === 0) {
+    stage = 1;
+    noBtn.style.display = "none";
+    yesBtn.style.display = "none";
+    gateText.textContent = "Thank you for choosing me ❤️";
+
+    setTimeout(() => {
+      gateText.textContent = "Are you ready for a small surprise? ✨";
+      yesBtn.style.display = "inline-block";
+    }, 1800);
+
+  } else {
+    const date = new Date().toLocaleDateString(undefined, {
+      year: "numeric",
+      month: "long",
+      day: "numeric"
+    });
+
+    localStorage.setItem("sheSaidYes", "true");
+    localStorage.setItem("yesDate", date);
+
+    gate.style.opacity = 0;
+    setTimeout(() => gate.remove(), 900);
+
+    main.classList.remove("blurred");
+    document.body.style.overflow = "auto";
+
+    startExperience(false);
+  }
+};
+
+/* ===============================
+   MAIN EXPERIENCE
+================================ */
+function startExperience(fromMemory) {
+  buildGallery();
+  startAmbientHearts();
+
+  // Force images visible (mobile fix)
+  setTimeout(() => {
+    document.querySelectorAll(".photo").forEach(p => {
+      p.classList.add("show");
+    });
+  }, 300);
+
+  const savedDate = localStorage.getItem("yesDate");
+  if (savedDate) {
+    dateEl.textContent = `She said yes on ${savedDate} ❤️`;
+  }
+
+  loadYouTube();
+
+  new IntersectionObserver(entries => {
+    if (entries[0].isIntersecting) {
+      ending.classList.add("show");
+      setTimeout(() => finalLove.classList.add("show"), 2000);
+    }
+  }, { threshold: 0.5 }).observe(ending);
 }
 
-/* BACKGROUND */
-body::before{
-  content:"";
-  position:fixed;
-  inset:0;
-  background:url("bg.jpg") center/cover no-repeat;
-  filter:blur(18px);
-  transform:scale(1.1);
-  z-index:-2;
-}
-body::after{
-  content:"";
-  position:fixed;
-  inset:0;
-  background:rgba(0,0,0,.35);
-  z-index:-1;
+/* ===============================
+   GALLERY
+================================ */
+function buildGallery() {
+  gallery.innerHTML = "";
+  for (let i = 1; i <= 11; i++) {
+    const p = document.createElement("div");
+    p.className = "photo";
+    p.innerHTML = `<img src="image${i}.jpg" alt="">`;
+    gallery.appendChild(p);
+  }
 }
 
-/* ASKING OVERLAY */
-#gate{
-  position:fixed;
-  inset:0;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  background:rgba(0,0,0,.55);
-  z-index:10;
-  transition:opacity 1s ease;
+/* ===============================
+   AMBIENT HEARTS
+================================ */
+function startAmbientHearts() {
+  setInterval(() => {
+    const h = document.createElement("div");
+    h.className = "ambient-heart";
+    h.textContent = "❤️";
+    h.style.left = Math.random() * 100 + "vw";
+    h.style.animationDuration = 4 + Math.random() * 3 + "s";
+    document.body.appendChild(h);
+    setTimeout(() => h.remove(), 7000);
+  }, 900);
 }
 
-.gate-box{
-  background:rgba(255,255,255,.15);
-  backdrop-filter:blur(10px);
-  padding:30px;
-  border-radius:18px;
-  text-align:center;
+/* ===============================
+   FIREWORKS (JAPANESE STYLE)
+================================ */
+function fireworkBurst() {
+  const colors = ["#ff5fa2", "#ffd166", "#a0c4ff", "#ffb4a2"];
+  for (let i = 0; i < 30; i++) {
+    const f = document.createElement("div");
+    f.className = "firework";
+    f.style.background = colors[Math.floor(Math.random() * colors.length)];
+    f.style.left = "50%";
+    f.style.top = "50%";
+    f.style.setProperty("--x", `${Math.random() * 400 - 200}px`);
+    f.style.setProperty("--y", `${Math.random() * -350}px`);
+    document.body.appendChild(f);
+    setTimeout(() => f.remove(), 1600);
+  }
 }
 
-.gate-buttons{
-  margin-top:20px;
+/* ===============================
+   YOUTUBE (SAFE AUTOPLAY)
+================================ */
+function loadYouTube() {
+  if (window.YT && player) {
+    player.playVideo();
+    return;
+  }
+
+  const tag = document.createElement("script");
+  tag.src = "https://www.youtube.com/iframe_api";
+  document.body.appendChild(tag);
 }
 
-.gate-buttons button{
-  font-size:1.2em;
-  padding:10px 18px;
-  margin:6px;
-  border:none;
-  border-radius:10px;
-  cursor:pointer;
-  transition:transform .2s ease, box-shadow .2s ease;
-}
+window.onYouTubeIframeAPIReady = () => {
+  player = new YT.Player("player", {
+    videoId: "96YyRY8vkhY",
+    playerVars: {
+      start: 16,
+      autoplay: 1,
+      controls: 0,
+      playsinline: 1
+    },
+    events: {
+      onReady: e => e.target.playVideo()
+    }
+  });
+};
 
-.gate-buttons button:active{
-  transform:scale(.95);
-  box-shadow:0 0 20px rgba(255,120,160,.8);
-}
+/* ===============================
+   SECRET RESET (REPLAY)
+================================ */
+let resetTimer = null;
 
-#yesBtn{ background:#ff5fa2; color:#fff; }
-#noBtn{ background:#555; color:#fff; }
+document.body.addEventListener("touchstart", () => {
+  resetTimer = setTimeout(resetAll, 5000);
+});
+document.body.addEventListener("touchend", () => {
+  clearTimeout(resetTimer);
+});
 
-/* MAIN CONTENT */
-#main{
-  transition:filter 1.2s ease;
-}
-.blurred{
-  filter:blur(14px);
-  pointer-events:none;
-}
+let keys = {};
+document.addEventListener("keydown", e => {
+  keys[e.key.toLowerCase()] = true;
+  if (keys.r && keys.e && keys.l) resetAll();
+});
+document.addEventListener("keyup", e => {
+  keys[e.key.toLowerCase()] = false;
+});
 
-.container{
-  max-width:520px;
-  margin:auto;
-  padding:25px;
-  text-align:center;
-  overflow:visible;
-}
-
-/* GALLERY */
-.photo{
-  margin-bottom:26px;
-}
-
-.photo img{
-  width:100%;
-  border-radius:14px;
-  opacity:0;
-  transform:translateY(40px);
-  transition:all 1.2s ease;
-
-  outline:2px solid rgba(var(--glow-r),var(--glow-g),var(--glow-b),.35);
-  box-shadow:
-    0 0 20px rgba(var(--glow-r),var(--glow-g),var(--glow-b),.5),
-    0 0 60px rgba(var(--glow-r),var(--glow-g),var(--glow-b),.3);
-}
-
-.photo.show img{
-  opacity:1;
-  transform:translateY(0);
-}
-
-/* 🎆 FIREWORKS */
-.firework{
-  position:fixed;
-  width:6px;
-  height:6px;
-  border-radius:50%;
-  pointer-events:none;
-  animation:explode 1.6s ease-out forwards;
-}
-
-@keyframes explode{
-  from{ opacity:1; transform:translate(0,0) scale(1); }
-  to{ opacity:0; transform:translate(var(--x),var(--y)) scale(1.4); }
-}
-
-/* 💕 FLOATING HEARTS */
-.ambient-heart{
-  position:fixed;
-  bottom:-30px;
-  font-size:16px;
-  pointer-events:none;
-  z-index:3;
-  opacity:.8;
-  filter:drop-shadow(0 0 8px rgba(255,90,140,.9));
-  animation:floatUp linear forwards;
-}
-
-@keyframes floatUp{
-  from{ transform:translateY(0) scale(.8); opacity:.9; }
-  to{ transform:translateY(-120vh) scale(1.3); opacity:0; }
-}
-
-/* ENDING */
-.ending{
-  margin-top:120px;
-  opacity:0;
-  transition:opacity 2s ease;
-}
-.ending.show{ opacity:1; }
-
-#finalLove{
-  margin-top:30px;
-  font-size:22px;
-  opacity:0;
-  transition:opacity 3s ease;
-}
-#finalLove.show{ opacity:1; }
-
-#yesDate{
-  margin-top:14px;
-  font-size:14px;
-  opacity:.85;
-  color:#ffdbe8;
-}
-
-/* HIDE PLAYER */
-#player{
-  position:fixed;
-  width:1px;
-  height:1px;
-  opacity:0;
-  left:-9999px;
+function resetAll() {
+  localStorage.clear();
+  location.reload();
 }
