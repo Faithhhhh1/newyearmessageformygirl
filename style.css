@@ -47,11 +47,24 @@ h1{
   border-radius:14px;
   opacity:0;
   transform:translateY(40px);
-  transition:opacity 1.2s ease, transform 1.2s ease;
+  transition:
+    opacity 1.2s ease,
+    transform 1.2s ease,
+    box-shadow 1.2s ease;
+  
+  /* soft glow */
+  box-shadow:
+    0 0 12px rgba(255, 140, 180, 0.35),
+    0 0 28px rgba(255, 140, 180, 0.25);
 }
 .photo.show img{
   opacity:1;
   transform:translateY(0);
+
+  /* stronger glow on reveal */
+  box-shadow:
+    0 0 18px rgba(255, 140, 180, 0.55),
+    0 0 45px rgba(255, 140, 180, 0.35);
 }
 
 /* AMBIENT HEARTS */
