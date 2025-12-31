@@ -1,116 +1,142 @@
-/* ---------------- ASKING FLOW ---------------- */
+/* ---------- STARS ---------- */
+for(let i=0;i<90;i++){
+  const s=document.createElement("div");
+  s.className="star";
+  s.style.left=Math.random()*100+"vw";
+  s.style.top=Math.random()*100+"vh";
+  s.style.animationDelay=Math.random()*6+"s";
+  document.body.appendChild(s);
+}
 
-const gate = document.getElementById("gate");
-const gateText = document.getElementById("gateText");
-const yesBtn = document.getElementById("yesBtn");
-const noBtn  = document.getElementById("noBtn");
-const main   = document.getElementById("main");
+/* ---------- SAKURA PETALS ---------- */
+function spawnPetal(){
+  const p=document.createElement("div");
+  p.className="sakura";
+  p.style.left=Math.random()*100+"vw";
+  p.style.setProperty("--x",`${Math.random()*120-60}px`);
+  p.style.setProperty("--r",`${Math.random()*360}deg`);
+  p.style.animationDuration=14+Math.random()*10+"s";
+  document.body.appendChild(p);
+  setTimeout(()=>p.remove(),24000);
+}
+setInterval(spawnPetal,900);
 
-const noMessages = [
+/* ---------- MUSIC (YouTube API) ---------- */
+let player;
+function loadMusic(){
+  if(player) return;
+  const tag=document.createElement("script");
+  tag.src="https://www.youtube.com/iframe_api";
+  document.body.appendChild(tag);
+}
+function onYouTubeIframeAPIReady(){
+  player=new YT.Player("player",{
+    videoId:"96YyRY8vkhY",
+    playerVars:{start:16,autoplay:1},
+    events:{
+      onReady:e=>e.target.playVideo()
+    }
+  });
+}
+
+/* ---------- ASKING FLOW ---------- */
+const gate=document.getElementById("gate");
+const yesBtn=document.getElementById("yesBtn");
+const noBtn=document.getElementById("noBtn");
+const gateText=document.getElementById("gateText");
+const main=document.getElementById("main");
+
+const noTexts=[
   "Are you sure?",
-  "Please 🥺",
-  "Think again 💔",
-  "I’ll cry 😭",
+  "Please think again…",
+  "My heart is here 💔",
+  "Don’t say no 🥺",
   "Say yes ❤️"
 ];
-let noIndex = 0;
-let stage = 0;
+let noIndex=0;
+let stage=0;
 
-noBtn.onclick = () => {
+noBtn.onclick=()=>{
+  gateText.textContent=noTexts[noIndex++%noTexts.length];
   navigator.vibrate?.(30);
-  gateText.textContent = noMessages[noIndex++ % noMessages.length];
-  yesBtn.style.transform = `scale(${1 + noIndex*0.08})`;
 };
 
-yesBtn.onclick = () => {
+yesBtn.onclick=()=>{
   navigator.vibrate?.(80);
 
-  if(stage === 0){
-    noBtn.remove();
-    yesBtn.remove();
-    gateText.textContent = "Thank you for choosing me ❤️";
-    stage = 1;
-
+  /* FIRST YES MESSAGE */
+  if(stage===0){
+    if(!localStorage.getItem("yesDate")){
+      localStorage.setItem("yesDate",new Date().toDateString());
+    }
+    gateText.textContent="Thank you for choosing me ❤️";
+    noBtn.style.display="none";
+    stage=1;
     setTimeout(()=>{
-      gateText.textContent = "Are you ready for a small surprise? ✨";
-      const btn = document.createElement("button");
-      btn.textContent = "Yes ❤️";
-      btn.style.marginTop = "15px";
-      btn.onclick = finishGate;
-      document.querySelector(".gate-box").appendChild(btn);
-    },1800);
+      gateText.textContent="Are you ready for a small surprise?";
+      noBtn.style.display="none";
+    },1600);
+    return;
   }
+
+  /* SECOND YES → ENTER */
+  gate.style.opacity=0;
+  setTimeout(()=>gate.remove(),900);
+  main.classList.remove("blurred");
+  document.body.style.overflow="auto";
+  loadMusic();
+  startExperience();
 };
 
-function finishGate(){
-  if(!localStorage.getItem("yesDate")){
-    localStorage.setItem("yesDate", new Date().toDateString());
-  }
-
-  gate.remove();
-  main.classList.remove("blurred");
-  document.body.style.overflow = "auto";
-  startExperience();
-}
-
-/* ---------------- MAIN EXPERIENCE ---------------- */
-
+/* ---------- MAIN EXPERIENCE ---------- */
 function startExperience(){
-  buildGallery();      // ✅ RESTORED
-  startPetals();
+  buildGallery();
   showDate();
-  loadMusic();
+
+  const observer=new IntersectionObserver(e=>{
+    if(e[0].isIntersecting){
+      document.querySelector(".ending").classList.add("show");
+      setTimeout(()=>{
+        document.getElementById("finalLove").classList.add("show");
+        endCinematic();
+      },2500);
+    }
+  },{threshold:.6});
+  observer.observe(document.querySelector(".ending"));
 }
 
-/* 🖼️ GALLERY (THIS WAS MISSING) */
 function buildGallery(){
-  const gallery = document.getElementById("gallery");
-  if(!gallery) return;
-
-  for(let i = 1; i <= 11; i++){
-    const div = document.createElement("div");
-    div.className = "photo";
-    div.innerHTML = `<img src="image${i}.jpg" alt="Memory ${i}">`;
-    gallery.appendChild(div);
+  const g=document.getElementById("gallery");
+  for(let i=1;i<=11;i++){
+    const d=document.createElement("div");
+    d.className="photo";
+    d.innerHTML=`<img src="image${i}.jpg">`;
+    g.appendChild(d);
+    new IntersectionObserver(e=>{
+      if(e[0].isIntersecting) d.classList.add("show");
+    }).observe(d);
   }
 }
 
-/* 🌸 PETALS */
-function startPetals(){
-  setInterval(()=>{
-    const p = document.createElement("div");
-    p.className = "petal";
-    p.style.left = Math.random()*100+"vw";
-    p.style.top = "-10px";
-    p.style.setProperty("--x", (Math.random()*80-40)+"px");
-    p.style.setProperty("--r", (Math.random()*360)+"deg");
-    p.style.animationDuration = 12 + Math.random()*6 + "s";
-    document.body.appendChild(p);
-    setTimeout(()=>p.remove(),18000);
-  },1200);
-}
-
-/* 📅 DATE */
 function showDate(){
-  const d = localStorage.getItem("yesDate");
+  const d=localStorage.getItem("yesDate");
   if(d){
-    document.getElementById("yesDate").textContent =
+    document.getElementById("yesDate").textContent=
       `She said yes on ${d} ❤️`;
   }
 }
 
-/* 🎵 MUSIC */
-let player;
-function loadMusic(){
-  const tag = document.createElement("script");
-  tag.src = "https://www.youtube.com/iframe_api";
-  document.body.appendChild(tag);
+/* ---------- CINEMATIC END ---------- */
+function endCinematic(){
+  setTimeout(()=>{
+    const f=document.createElement("div");
+    f.className="fade-black";
+    document.body.appendChild(f);
+  },7000);
 }
 
-function onYouTubeIframeAPIReady(){
-  player = new YT.Player("player",{
-    videoId:"96YyRY8vkhY",
-    playerVars:{ start:16, autoplay:1, controls:0 },
-    events:{ onReady:e=>e.target.playVideo() }
-  });
-}
+/* ---------- ALWAYS ASK ON OPEN ---------- */
+window.onload=()=>{
+  main.classList.add("blurred");
+  document.body.style.overflow="hidden";
+};
