@@ -1,61 +1,47 @@
-/* ===============================
-   ELEMENTS
-================================ */
-const gate = document.getElementById("gate");
-const gateText = document.getElementById("gateText");
-const yesBtn = document.getElementById("yesBtn");
-const noBtn = document.getElementById("noBtn");
+/* ================== SAFE BOOT ================== */
+document.addEventListener("DOMContentLoaded", () => {
+  const gate = document.getElementById("gate");
+  const main = document.getElementById("main");
 
-const main = document.getElementById("main");
-const gallery = document.getElementById("gallery");
-const ending = document.getElementById("ending");
-const finalLove = document.getElementById("finalLove");
-const dateEl = document.getElementById("yesDate");
-
-let stage = 0;
-let noIndex = 0;
-let player;
-
-/* ===============================
-   UTIL
-================================ */
-function vibrate(ms = 30) {
-  if (navigator.vibrate) navigator.vibrate(ms);
-}
-
-/* ===============================
-   FORCE INITIAL STATE
-================================ */
-window.addEventListener("load", () => {
-  // Always show gate first
-  gate.style.display = "flex";
-  main.classList.add("blurred");
+  // Default state
   document.body.style.overflow = "hidden";
+  main.classList.add("blurred");
 
-  // Only auto-skip if user already accepted BEFORE
   if (localStorage.getItem("sheSaidYes") === "true") {
     gate.remove();
     main.classList.remove("blurred");
     document.body.style.overflow = "auto";
-    startExperience(true);
+    startExperience();
+  } else {
+    gate.style.display = "flex";
   }
 });
 
-/* ===============================
-   ASKING LOGIC
-================================ */
-const messages = [
+/* ================== ASKING ================== */
+const gateText = document.getElementById("gateText");
+const yesBtn = document.getElementById("yesBtn");
+const noBtn = document.getElementById("noBtn");
+const gate = document.getElementById("gate");
+const main = document.getElementById("main");
+
+const noMessages = [
   "Are you sure?",
-  "Really sure??",
-  "Pookie please…",
-  "Think again 😭",
-  "My heart is right here 💔",
-  "Okay fine… just kidding ❤️"
+  "Please 🥺",
+  "Think again 💔",
+  "I’ll cry 😭",
+  "Say yes please ❤️"
 ];
 
+let noIndex = 0;
+let stage = 0;
+
+function vibrate(ms = 30) {
+  if (navigator.vibrate) navigator.vibrate(ms);
+}
+
 noBtn.onclick = () => {
-  vibrate(25);
-  gateText.textContent = messages[noIndex % messages.length];
+  vibrate();
+  gateText.textContent = noMessages[noIndex % noMessages.length];
   noIndex++;
   yesBtn.style.fontSize = `${1.2 + noIndex * 0.15}em`;
 };
@@ -65,16 +51,15 @@ yesBtn.onclick = () => {
   fireworkBurst();
 
   if (stage === 0) {
-    stage = 1;
     noBtn.style.display = "none";
     yesBtn.style.display = "none";
     gateText.textContent = "Thank you for choosing me ❤️";
+    stage = 1;
 
     setTimeout(() => {
       gateText.textContent = "Are you ready for a small surprise? ✨";
       yesBtn.style.display = "inline-block";
     }, 1800);
-
   } else {
     const date = new Date().toLocaleDateString(undefined, {
       year: "numeric",
@@ -86,75 +71,15 @@ yesBtn.onclick = () => {
     localStorage.setItem("yesDate", date);
 
     gate.style.opacity = "0";
-    setTimeout(() => gate.remove(), 900);
+    setTimeout(() => gate.remove(), 1000);
 
     main.classList.remove("blurred");
     document.body.style.overflow = "auto";
-
-    startExperience(false);
+    startExperience();
   }
 };
 
-/* ===============================
-   MAIN EXPERIENCE
-================================ */
-function startExperience(fromMemory) {
-  buildGallery();
-  startAmbientHearts();
-
-  // Mobile visibility fix
-  setTimeout(() => {
-    document.querySelectorAll(".photo").forEach(p => {
-      p.classList.add("show");
-    });
-  }, 300);
-
-  const savedDate = localStorage.getItem("yesDate");
-  if (savedDate) {
-    dateEl.textContent = `She said yes on ${savedDate} ❤️`;
-  }
-
-  loadYouTube();
-
-  new IntersectionObserver(entries => {
-    if (entries[0].isIntersecting) {
-      ending.classList.add("show");
-      setTimeout(() => finalLove.classList.add("show"), 2000);
-    }
-  }, { threshold: 0.5 }).observe(ending);
-}
-
-/* ===============================
-   GALLERY
-================================ */
-function buildGallery() {
-  gallery.innerHTML = "";
-  for (let i = 1; i <= 11; i++) {
-    const p = document.createElement("div");
-    p.className = "photo";
-    p.innerHTML = `<img src="image${i}.jpg">`;
-    gallery.appendChild(p);
-  }
-}
-
-/* ===============================
-   FLOATING HEARTS
-================================ */
-function startAmbientHearts() {
-  setInterval(() => {
-    const h = document.createElement("div");
-    h.className = "ambient-heart";
-    h.textContent = "❤️";
-    h.style.left = Math.random() * 100 + "vw";
-    h.style.animationDuration = 4 + Math.random() * 3 + "s";
-    document.body.appendChild(h);
-    setTimeout(() => h.remove(), 7000);
-  }, 900);
-}
-
-/* ===============================
-   JAPANESE-STYLE FIREWORKS
-================================ */
+/* ================== FIREWORKS ================== */
 function fireworkBurst() {
   const colors = ["#ff5fa2", "#ffd166", "#a0c4ff", "#ffb4a2"];
   for (let i = 0; i < 30; i++) {
@@ -170,57 +95,83 @@ function fireworkBurst() {
   }
 }
 
-/* ===============================
-   YOUTUBE (MOBILE SAFE)
-================================ */
-function loadYouTube() {
-  if (window.YT && player) {
-    player.playVideo();
-    return;
+/* ================== MAIN EXPERIENCE ================== */
+const gallery = document.getElementById("gallery");
+const ending = document.getElementById("ending");
+const finalLove = document.getElementById("finalLove");
+const dateEl = document.getElementById("yesDate");
+
+function buildGallery() {
+  for (let i = 1; i <= 11; i++) {
+    const p = document.createElement("div");
+    p.className = "photo";
+    p.innerHTML = `<img src="image${i}.jpg">`;
+    gallery.appendChild(p);
+
+    new IntersectionObserver(e => {
+      if (e[0].isIntersecting) p.classList.add("show");
+    }, { threshold: 0.4 }).observe(p);
+  }
+}
+
+function startAmbientHearts() {
+  setInterval(() => {
+    const h = document.createElement("div");
+    h.className = "ambient-heart";
+    h.textContent = "❤️";
+    h.style.left = Math.random() * 100 + "vw";
+    h.style.animationDuration = 4 + Math.random() * 3 + "s";
+    document.body.appendChild(h);
+    setTimeout(() => h.remove(), 7000);
+  }, 900);
+}
+
+function startExperience() {
+  buildGallery();
+  startAmbientHearts();
+
+  const savedDate = localStorage.getItem("yesDate");
+  if (savedDate) {
+    dateEl.textContent = `She said yes on ${savedDate} ❤️`;
   }
 
   const tag = document.createElement("script");
   tag.src = "https://www.youtube.com/iframe_api";
   document.body.appendChild(tag);
+
+  new IntersectionObserver(e => {
+    if (e[0].isIntersecting) {
+      ending.classList.add("show");
+      setTimeout(() => finalLove.classList.add("show"), 2000);
+    }
+  }, { threshold: 0.6 }).observe(ending);
 }
 
-window.onYouTubeIframeAPIReady = () => {
+/* ================== MUSIC ================== */
+let player;
+function onYouTubeIframeAPIReady() {
   player = new YT.Player("player", {
     videoId: "96YyRY8vkhY",
-    playerVars: {
-      start: 16,
-      autoplay: 1,
-      controls: 0,
-      playsinline: 1
-    },
-    events: {
-      onReady: e => e.target.playVideo()
-    }
+    playerVars: { start: 16, autoplay: 1, playsinline: 1 },
+    events: { onReady: e => e.target.playVideo() }
   });
-};
+}
 
-/* ===============================
-   SECRET RESET (REPLAY MODE)
-================================ */
-let resetTimer = null;
-
+/* ================== SECRET RESET ================== */
+let holdTimer = null;
 document.body.addEventListener("touchstart", () => {
-  resetTimer = setTimeout(resetAll, 5000);
+  holdTimer = setTimeout(reset, 5000);
 });
-document.body.addEventListener("touchend", () => {
-  clearTimeout(resetTimer);
-});
+document.body.addEventListener("touchend", () => clearTimeout(holdTimer));
 
 let keys = {};
 document.addEventListener("keydown", e => {
   keys[e.key.toLowerCase()] = true;
-  if (keys.r && keys.e && keys.l) resetAll();
+  if (keys.r && keys.e && keys.l) reset();
 });
-document.addEventListener("keyup", e => {
-  keys[e.key.toLowerCase()] = false;
-});
+document.addEventListener("keyup", e => keys[e.key.toLowerCase()] = false);
 
-function resetAll() {
+function reset() {
   localStorage.clear();
   location.reload();
 }
