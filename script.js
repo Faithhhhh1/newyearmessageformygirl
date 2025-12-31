@@ -116,7 +116,21 @@ function fireworks(){
 }
 
 /* AUTO SKIP IF ALREADY SAID YES */
-if(localStorage.getItem("sheSaidYes")){
-  document.getElementById("askScreen").classList.add("hidden");
-  startMain();
-}
+window.onload = () => {
+  const ask = document.getElementById("askScreen");
+  const thank = document.getElementById("thankYou");
+  const main = document.getElementById("mainContent");
+
+  // Hide everything first
+  ask.classList.add("hidden");
+  thank.classList.add("hidden");
+  main.classList.add("hidden");
+
+  if (localStorage.getItem("sheSaidYes")) {
+    // Already accepted → jump straight to letter
+    startMain();
+  } else {
+    // First time → show asking screen
+    ask.classList.remove("hidden");
+  }
+};
