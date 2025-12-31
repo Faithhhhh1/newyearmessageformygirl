@@ -1,127 +1,133 @@
-html,body{
-  margin:0;
-  padding:0;
-  font-family:Arial,sans-serif;
-  background:#000;
-  overflow-x:hidden;
+html, body {
+  margin: 0;
+  padding: 0;
+  font-family: Arial, sans-serif;
+  background: #000;
+  overflow-x: hidden;
 }
 
-/* BLURRED BACKGROUND */
-body::before{
-  content:"";
-  position:fixed;
-  inset:0;
-  background:url("bg.jpg") center/cover no-repeat;
-  filter:blur(18px);
-  transform:scale(1.1);
-  z-index:-2;
+/* PREVENT FLASH */
+body {
+  opacity: 0;
 }
-body::after{
-  content:"";
-  position:fixed;
-  inset:0;
-  background:rgba(0,0,0,.35);
-  z-index:-1;
+body.ready {
+  opacity: 1;
+  transition: opacity .5s ease;
 }
 
-/* MOBILE UNLOCK */
-#mobileUnlock{
-  position:fixed;
-  inset:0;
-  background:rgba(0,0,0,.7);
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  z-index:9999;
+/* BACKGROUND */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background: url("bg.jpg") center/cover no-repeat;
+  filter: blur(18px);
+  transform: scale(1.1);
+  z-index: -2;
 }
-.unlockBox{
-  color:#fff;
-  padding:22px 28px;
-  border-radius:16px;
-  background:rgba(255,255,255,.18);
-  animation:pulse 1.5s infinite;
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.4);
+  z-index: -1;
 }
-@keyframes pulse{
-  0%{transform:scale(1)}
-  50%{transform:scale(1.05)}
-  100%{transform:scale(1)}
+
+/* LOCK */
+#mobileUnlock {
+  position: fixed;
+  inset: 0;
+  background: #000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 99999;
+}
+.unlockBox {
+  color: #fff;
+  padding: 22px 30px;
+  border-radius: 16px;
+  background: rgba(255,255,255,.15);
+  animation: pulse 1.5s infinite;
+}
+@keyframes pulse {
+  50% { transform: scale(1.05); }
 }
 
 /* CENTER SCREENS */
-.centerBox{
-  position:fixed;
-  inset:0;
-  display:flex;
-  flex-direction:column;
-  justify-content:center;
-  align-items:center;
-  color:#fff;
-  text-align:center;
+.center {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  color: #fff;
+  text-align: center;
 }
-.hidden{display:none;}
+.hidden {
+  display: none !important;
+}
 
-.buttons button{
-  font-size:18px;
-  padding:12px 22px;
-  margin:10px;
-  border:none;
-  border-radius:25px;
-  cursor:pointer;
+/* BUTTONS */
+.buttons button {
+  font-size: 18px;
+  padding: 12px 24px;
+  margin: 10px;
+  border: none;
+  border-radius: 24px;
+  cursor: pointer;
 }
-#yesBtn{background:#ff5fa2;color:#fff;}
-#noBtn{background:#777;color:#fff;}
+#yesBtn { background: #ff5fa2; color: #fff; }
+#noBtn { background: #777; color: #fff; }
 
 /* MAIN CONTENT */
-#mainContent{
-  max-width:520px;
-  margin:120px auto;
-  padding:20px;
+#mainContent {
+  max-width: 520px;
+  margin: 120px auto;
+  padding: 20px;
 }
-.title{
-  text-align:center;
-  color:#fff;
-  margin-bottom:30px;
+.title {
+  text-align: center;
+  color: #fff;
+  margin-bottom: 30px;
 }
 
 /* GALLERY */
-.photo{
-  margin-bottom:26px;
+.photo {
+  margin-bottom: 26px;
 }
-.photo img{
-  width:100%;
-  border-radius:16px;
-  box-shadow:0 0 20px rgba(255,120,160,.5);
-  animation:glow 4s ease-in-out infinite alternate;
+.photo img {
+  width: 100%;
+  border-radius: 16px;
+  box-shadow: 0 0 22px rgba(255,140,180,.6);
+  animation: glow 4s ease-in-out infinite alternate;
 }
-@keyframes glow{
-  from{box-shadow:0 0 18px rgba(255,120,160,.4);}
-  to{box-shadow:0 0 28px rgba(255,180,220,.9);}
-}
-
-/* ENDING */
-.ending{
-  margin-top:80px;
-  color:#fff;
-  text-align:center;
-}
-#typedText{
-  font-size:20px;
-  white-space:pre-line;
-}
-#dateText{
-  margin-top:10px;
-  font-size:14px;
-  opacity:.8;
+@keyframes glow {
+  from { box-shadow: 0 0 18px rgba(255,140,180,.4); }
+  to   { box-shadow: 0 0 30px rgba(255,200,220,.9); }
 }
 
-/* FIREWORKS */
-.firework{
-  position:fixed;
-  left:50%;
-  top:50%;
-  width:6px;
-  height:6px;
-  border-radius:50%;
-  background:transparent;
-  pointer-events:none;
+/* END */
+.ending {
+  margin-top: 80px;
+  color: #fff;
+  text-align: center;
+}
+#typedText {
+  font-size: 20px;
+  white-space: pre-line;
+}
+#dateText {
+  margin-top: 10px;
+  font-size: 14px;
+  opacity: .85;
+}
+
+/* FIREWORK */
+.firework {
+  position: fixed;
+  left: 50%;
+  top: 50%;
+  pointer-events: none;
 }
