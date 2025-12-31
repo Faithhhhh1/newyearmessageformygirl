@@ -65,19 +65,25 @@ yesBtn.onclick=()=>{
   navigator.vibrate?.(80);
 
   /* FIRST YES MESSAGE */
-  if(stage===0){
-    if(!localStorage.getItem("yesDate")){
-      localStorage.setItem("yesDate",new Date().toDateString());
-    }
-    gateText.textContent="Thank you for choosing me ❤️";
-    noBtn.style.display="none";
-    stage=1;
-    setTimeout(()=>{
-      gateText.textContent="Are you ready for a small surprise?";
-      noBtn.style.display="none";
-    },1600);
-    return;
+ if(stage===0){
+  if(!localStorage.getItem("yesDate")){
+    localStorage.setItem("yesDate",new Date().toDateString());
   }
+
+  // Step 1: Thank you screen (NO buttons)
+  gateText.textContent = "Thank you for choosing me ❤️";
+  yesBtn.style.display = "none";
+  noBtn.style.display = "none";
+  stage = 1;
+
+  // Step 2: Surprise question (YES button returns)
+  setTimeout(()=>{
+    gateText.textContent = "Are you ready for a small surprise?";
+    yesBtn.style.display = "inline-block";
+  }, 1600);
+
+  return;
+}
 
   /* SECOND YES → ENTER */
   gate.style.opacity=0;
