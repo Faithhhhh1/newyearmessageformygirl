@@ -110,6 +110,21 @@ body::before{
   transform:scale(.95);
 }
 
+/* 💍 RING SPARKLE */
+.ring{
+  position:absolute;
+  width:80px;
+  height:80px;
+  border-radius:50%;
+  border:2px solid rgba(255,200,220,.9);
+  animation: ringPop 1.6s ease-out forwards;
+  pointer-events:none;
+}
+@keyframes ringPop{
+  from{transform:scale(.4);opacity:1}
+  to{transform:scale(1.8);opacity:0}
+}
+
 /* MAIN CONTENT */
 #main{
   transition:filter 1.5s ease;
@@ -162,6 +177,19 @@ body::before{
   margin-top:14px;
   font-size:14px;
   opacity:.75;
+}
+
+/* 🎬 CINEMATIC FADE */
+.fade-black{
+  position:fixed;
+  inset:0;
+  background:black;
+  opacity:0;
+  pointer-events:none;
+  animation: fadeOut 1s forwards;
+}
+@keyframes fadeOut{
+  to{opacity:1}
 }
 
 /* 🎵 HIDDEN PLAYER */
