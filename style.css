@@ -8,8 +8,8 @@ body{
   margin:0;
   font-family:Arial,sans-serif;
   background:#000;
-  overflow:hidden;
   color:#fff;
+  overflow-x:hidden; /* ✅ allow vertical scroll */
 }
 
 /* BACKGROUND */
@@ -76,9 +76,12 @@ body::after{
 #main{
   transition:filter 1.2s ease;
 }
+
 .blurred{
   filter:blur(14px);
   pointer-events:none;
+  height:100vh;
+  overflow:hidden; /* ✅ lock scroll only before accept */
 }
 
 .container{
@@ -86,7 +89,6 @@ body::after{
   margin:auto;
   padding:25px;
   text-align:center;
-  overflow:visible;
 }
 
 /* GALLERY */
@@ -99,12 +101,14 @@ body::after{
   border-radius:14px;
   opacity:0;
   transform:translateY(40px);
-  transition:all 1.2s ease;
+  transition:opacity 1.2s ease, transform 1.2s ease;
 
   outline:2px solid rgba(var(--glow-r),var(--glow-g),var(--glow-b),.35);
   box-shadow:
-    0 0 20px rgba(var(--glow-r),var(--glow-g),var(--glow-b),.5),
-    0 0 60px rgba(var(--glow-r),var(--glow-g),var(--glow-b),.3);
+    0 0 18px rgba(var(--glow-r),var(--glow-g),var(--glow-b),.45),
+    0 0 50px rgba(var(--glow-r),var(--glow-g),var(--glow-b),.25);
+
+  animation:glowPulse 6s ease-in-out infinite;
 }
 
 .photo.show img{
@@ -112,19 +116,33 @@ body::after{
   transform:translateY(0);
 }
 
-/* 🎆 FIREWORKS */
+/* ✨ Breathing glow */
+@keyframes glowPulse{
+  0%{
+    box-shadow:
+      0 0 18px rgba(var(--glow-r),var(--glow-g),var(--glow-b),.35),
+      0 0 40px rgba(var(--glow-r),var(--glow-g),var(--glow-b),.2);
+  }
+  50%{
+    box-shadow:
+      0 0 28px rgba(var(--glow-r),var(--glow-g),var(--glow-b),.65),
+      0 0 70px rgba(var(--glow-r),var(--glow-g),var(--glow-b),.4);
+  }
+  100%{
+    box-shadow:
+      0 0 18px rgba(var(--glow-r),var(--glow-g),var(--glow-b),.35),
+      0 0 40px rgba(var(--glow-r),var(--glow-g),var(--glow-b),.2);
+  }
+}
+
+/* 🎆 FIREWORKS (JS controls motion) */
 .firework{
   position:fixed;
   width:6px;
   height:6px;
   border-radius:50%;
   pointer-events:none;
-  animation:explode 1.6s ease-out forwards;
-}
-
-@keyframes explode{
-  from{ opacity:1; transform:translate(0,0) scale(1); }
-  to{ opacity:0; transform:translate(var(--x),var(--y)) scale(1.4); }
+  z-index:20;
 }
 
 /* 💕 FLOATING HEARTS */
