@@ -39,6 +39,7 @@ body::after{
   justify-content:center;
   background:rgba(0,0,0,.55);
   z-index:10;
+  transition:opacity 1s ease;
 }
 
 .gate-box{
@@ -60,6 +61,12 @@ body::after{
   border:none;
   border-radius:10px;
   cursor:pointer;
+  transition:transform .2s ease, box-shadow .2s ease;
+}
+
+.gate-buttons button:active{
+  transform:scale(.95);
+  box-shadow:0 0 20px rgba(255,120,160,.8);
 }
 
 #yesBtn{ background:#ff5fa2; color:#fff; }
@@ -106,16 +113,34 @@ body::after{
   transform:translateY(0);
 }
 
+/* HEART BURST */
+.heart{
+  position:fixed;
+  font-size:20px;
+  pointer-events:none;
+  animation:fly 1.8s ease-out forwards;
+}
+
+@keyframes fly{
+  from{ opacity:1; transform:translate(0,0) scale(1); }
+  to{ opacity:0; transform:translate(var(--x), var(--y)) scale(1.8); }
+}
+
 /* ENDING */
 .ending{
-  margin-top:100px;
+  margin-top:120px;
   opacity:0;
   transition:opacity 2s ease;
 }
 .ending.show{ opacity:1; }
 
-#typedText{ font-size:20px; }
-#secret{ display:none; margin-top:20px; color:#ffdbe8; }
+#finalLove{
+  margin-top:30px;
+  font-size:22px;
+  opacity:0;
+  transition:opacity 3s ease;
+}
+#finalLove.show{ opacity:1; }
 
 /* HIDE PLAYER */
 #player{
