@@ -2,29 +2,39 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>New Year</title>
+  <title>For You</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="style.css">
 </head>
-
 <body>
 
+<!-- ASKING OVERLAY -->
+<div id="gate">
+  <div class="gate-box">
+    <h2 id="gateText">Will you be my wife? 💍</h2>
+    <div class="gate-buttons">
+      <button id="yesBtn">Yes ❤️</button>
+      <button id="noBtn">No 😒</button>
+    </div>
+  </div>
+</div>
+
+<!-- MAIN CONTENT (BLURRED INITIALLY) -->
+<div id="main" class="blurred">
   <div class="container">
     <h1>For You ❤️</h1>
-
     <div id="gallery"></div>
 
     <div class="ending" id="ending">
       <div id="typedText"></div>
-      <div id="secret">“Thank you for your love baby…❤️”</div>
+      <div id="secret">Thank you for choosing me… ❤️</div>
     </div>
   </div>
+</div>
 
-  <!-- Hidden YouTube player -->
-  <div id="player"></div>
+<!-- Hidden YouTube Player -->
+<div id="player"></div>
 
-  <!-- REQUIRED -->
-  <script src="script.js"></script>
-
+<script src="script.js"></script>
 </body>
 </html>
